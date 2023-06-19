@@ -67,28 +67,37 @@ function Header() {
 }
 
 function Menu() {
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
   return (
     <main className="menu">
       <h2>Our Menu</h2>
-      <Pizza
-        photoName="pizzas/spinaci.jpg"
-        name="Pizza Spinaci"
-        ingredients="Tomato, mozarella, spinach, and ricotta cheese"
-        price={10}
-      />
-      <Pizza name="Pizza funghi" photoName="pizzas/funghi.jpg" ingredients="Tomato, mushroom" price={20} />
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+            In the above example, we have an object called person that contains properties like name, age, and city. We
+            can use object destructuring to extract these values and assign them to individual variables.
+          </p>
+          <div className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }
 
-function Pizza(props) {
+function Pizza({ pizzaObj }) {
   return (
-    <div>
-      <img src={props.photoName} alt={props.name} />
+    <div className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
-        <h3>{props.name}</h3>
-        <p>{props.ingredients}</p>
-        <span>{props.price}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaObj.soldOut ? "SOLD OUT" : pizzaObj.price}</span>
       </div>
     </div>
   );
@@ -99,13 +108,19 @@ function Footer() {
   const openHour = 8;
   const closeHour = 22;
   const isOpen = hour >= openHour && hour <= closeHour;
-  console.log(isOpen);
+
   //   if (hour >= openHour && hour <= closeHour) alert("We are currently opening, Welcome to taste our pizzas!");
   //   else alert("We are closed!");
 
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()}We are currently opening, Welcome to taste our pizzas!
+      {isOpen ? (
+        <Order openHour={openHour} closeHour={closeHour} />
+      ) : (
+        <p>
+          We are closed, please come back between {openHour}:00----{closeHour}:00
+        </p>
+      )}
     </footer>
   );
   //   return React.createElement(
@@ -113,6 +128,17 @@ function Footer() {
   //     null,
   //     'We are currently opening, Welcome to taste our pizzas!'
   //   );
+}
+
+function Order({ closeHour, openHour }) {
+  return (
+    <div className="order">
+      <p>
+        We are open from {openHour}:00 to {closeHour}:00. Come to here or visit it Online
+      </p>
+      <button className="btn">Order</button>
+    </div>
+  );
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
